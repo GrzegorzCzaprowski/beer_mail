@@ -5,10 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers"
+	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/user"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
-
 	"github.com/julienschmidt/httprouter"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 
 	userModel := models.UserModel{DB: db}
 	userHandler := user.UserHandler{M: userModel}
-	router.POST("user/add", userHandler.Post)
+	router.POST("/user/add", userHandler.Post)
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
