@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	event "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/event"
 	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/user"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
 	"github.com/julienschmidt/httprouter"
@@ -24,6 +25,10 @@ func main() {
 	userModel := models.UserModel{DB: db}
 	userHandler := user.UserHandler{M: userModel}
 	router.POST("/user/add", userHandler.Post)
+
+	eventModel := models.EventModel{DB: db}
+	eventHandler := event.EventHandler{M: eventModel}
+	router.POST("/event/add", eventHandler.Post)
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

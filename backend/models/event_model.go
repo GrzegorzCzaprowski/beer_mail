@@ -13,3 +13,5 @@ type Event struct {
 type EventModel struct {
 	DB *sql.DB
 }
+
+func (model EventModel) CreateEvent() {}
