@@ -1,1 +1,1 @@
-# beer_mail_backend
+# beer_mail
