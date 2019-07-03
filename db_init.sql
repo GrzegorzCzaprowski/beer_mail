@@ -1,3 +1,4 @@
+CREATE DATABASE beerdb
 -- ************************************** "events"
 
 CREATE TABLE "events"
