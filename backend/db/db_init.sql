@@ -25,16 +25,21 @@ CREATE DATABASE testdb
 
 CREATE TABLE "public"."users"
 (
-"id"      int NOT NULL,
+"id"      SERIAL NOT NULL,
 "name"    varchar(50) NOT NULL,
 "surname" varchar(50) NOT NULL,
-"email"   varchar(50) NOT NULL
+"email"   varchar(50) NOT NULL ,
+"admin"   boolean NOT NULL
 
 );
 
 CREATE UNIQUE INDEX "PK_users" ON "public"."users"
 (
 "id"
+);
+CREATE UNIQUE INDEX "email_users" ON "public"."users"
+(
+"email"
 );
 
 
@@ -48,7 +53,7 @@ ALTER TABLE "public"."users" OWNER TO testuser;
 
 CREATE TABLE "public"."events"
 (
-"id"       int NOT NULL,
+"id"       SERIAL NOT NULL,
 "id_users" int NOT NULL,
 "date"     timestamp NOT NULL,
 "place"    text NOT NULL,
@@ -75,7 +80,7 @@ ALTER TABLE "public"."events" OWNER TO testuser;
 
 CREATE TABLE "public"."guests"
 (
-"id"        int NOT NULL,
+"id"        SERIAL NOT NULL,
 "id_events" int NOT NULL,
 "id_users"  int NOT NULL,
 "confirm"   boolean NOT NULL,
