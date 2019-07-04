@@ -13,13 +13,12 @@ func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (bool, er
 	c, err := req.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
-			log.Println("to ")
 			// If the cookie is not set, return an unauthorized status
 			w.WriteHeader(http.StatusUnauthorized)
 			return false, err
 		}
 		// For any other type of error, return a bad request status
-		log.Println("czy to ")
+
 		w.WriteHeader(http.StatusBadRequest)
 		return false, err
 	}

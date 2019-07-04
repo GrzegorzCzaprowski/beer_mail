@@ -51,6 +51,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		Name:    "token",
 		Value:   tokenString,
 		Expires: expirationTime,
+		Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
 	})
 	log.Println("You loged correctly")
 
