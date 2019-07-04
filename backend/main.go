@@ -1,5 +1,8 @@
 package main
 
+// insert into users (name, surname, email, password, admin) values ('test', 'test', 'test@email.com', 'test', false);
+// insert into users (name, surname, email, password, admin) values ('admin', 'admin', 'admin@email.com', 'admin', true);
+
 import (
 	"database/sql"
 	"log"
@@ -24,11 +27,12 @@ func main() {
 
 	userModel := models.UserModel{DB: db}
 	userHandler := user.UserHandler{M: userModel}
-	router.POST("/user/add", userHandler.Post)
+	router.POST("/user/post", userHandler.Post)
+	router.POST("/user/login", userHandler.Login)
 
 	eventModel := models.EventModel{DB: db}
 	eventHandler := event.EventHandler{M: eventModel}
-	router.POST("/event/add", eventHandler.Post)
+	router.POST("/event/post", eventHandler.Post)
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

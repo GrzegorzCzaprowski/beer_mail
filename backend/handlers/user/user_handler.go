@@ -1,10 +1,14 @@
 package handlers
 
+import (
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+)
+
 type modelerUser interface {
 	CreateUser()
 	DeleteUser()
 	GetAllUsers()
-	Login()
+	FindUserInDB(models.User) (models.User, error)
 	Logout()
 }
 
