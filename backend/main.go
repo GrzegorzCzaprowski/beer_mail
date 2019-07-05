@@ -29,6 +29,7 @@ func main() {
 	userHandler := user.UserHandler{M: userModel}
 	router.POST("/user/post", userHandler.Post)
 	router.POST("/user/login", userHandler.Login)
+	router.GET("/user/get", userHandler.Get)
 
 	eventModel := models.EventModel{DB: db}
 	eventHandler := event.EventHandler{M: eventModel}

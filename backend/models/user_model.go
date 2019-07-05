@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/lib/pq"
 )
 
 type User struct {
@@ -43,8 +44,19 @@ func (model UserModel) FindUserInDB(user User) (User, error) {
 	return User{}, errors.New("incorect password")
 }
 
-func (model UserModel) CreateUser() {
-
+func (model UserModel) InsertUserIntoDB(user User) error {
+	_, err := model.DB.Exec("INSERT INTO users(name, surname, email, password, admin) VALUES($1, $2, $3, $4, $5)", user.Name, user.Surname, user.Email, user.Password, user.IsAdmin)
+	if err, ok := err.(*pq.Error); ok {
+		if err.Code == "23505" {
+			return err
+		}
+	}
+	if err != nil {
+		log.Println("user cant be put to database")
+		return err
+	}
+	log.Println("user was put to databese")
+	return err
 }
 
 func (model UserModel) DeleteUser() {
