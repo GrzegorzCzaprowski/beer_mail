@@ -94,7 +94,3 @@ func (model UserModel) GetAllUsersFromDB() ([]User, error) {
 	}
 	return users, rows.Err()
 }
-
-func (model UserModel) Logout() {
-
-}

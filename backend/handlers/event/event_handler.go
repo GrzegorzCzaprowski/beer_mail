@@ -1,7 +1,11 @@
 package handlers
 
+import (
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+)
+
 type modelerEvent interface {
-	CreateEvent()
+	InsertEventIntoDB(models.Event) error
 }
 
 type EventHandler struct {

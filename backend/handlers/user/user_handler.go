@@ -9,7 +9,6 @@ type modelerUser interface {
 	DeleteUserFromDB(int) error
 	GetAllUsersFromDB() ([]models.User, error)
 	FindUserInDB(models.User) (models.User, error)
-	Logout()
 }
 
 type UserHandler struct {
