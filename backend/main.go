@@ -30,6 +30,8 @@ func main() {
 	router.POST("/user/post", userHandler.Post)
 	router.POST("/user/login", userHandler.Login)
 	router.GET("/user/get", userHandler.Get)
+	router.DELETE("/user/delete/:id/", userHandler.Delete)
+	router.POST("/user/logout", userHandler.Logout)
 
 	eventModel := models.EventModel{DB: db}
 	eventHandler := event.EventHandler{M: eventModel}

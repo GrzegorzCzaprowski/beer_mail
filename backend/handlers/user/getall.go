@@ -2,36 +2,36 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 )
 
 func (h UserHandler) Get(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	ok, err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
-		log.Println("authentication failed: ", err)
+		log.Error("authentication failed: ", err)
 		return
 	}
 	if !ok {
-		log.Println("you are not an admin")
+		log.Warn("you are not an admin")
 		return
 	}
 
 	users, err := h.M.GetAllUsersFromDB()
 	if err != nil {
-		log.Println("error with decoding user from json: ", err)
+		log.Error("error with decoding user from json: ", err)
 		w.WriteHeader(500)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(users)
 	if err != nil {
-		log.Println("error with encoding to json: ", err)
+		log.Error("error with encoding to json: ", err)
 		w.WriteHeader(500)
 		return
 	}
-	log.Println("got all users")
+	log.Info("got all users")
 }

@@ -6,7 +6,7 @@ import (
 
 type modelerUser interface {
 	InsertUserIntoDB(models.User) error
-	DeleteUser()
+	DeleteUserFromDB(int) error
 	GetAllUsersFromDB() ([]models.User, error)
 	FindUserInDB(models.User) (models.User, error)
 	Logout()

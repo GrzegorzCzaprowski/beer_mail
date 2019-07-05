@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"log"
+	"fmt"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/lib/pq"
@@ -38,7 +38,6 @@ func (model UserModel) FindUserInDB(user User) (User, error) {
 		return user, err
 	}
 	if password == user.Password {
-		log.Println("password is correct")
 		return user, err
 	}
 	return User{}, errors.New("incorect password")
@@ -51,16 +50,31 @@ func (model UserModel) InsertUserIntoDB(user User) error {
 			return err
 		}
 	}
+
 	if err != nil {
-		log.Println("user cant be put to database")
 		return err
 	}
-	log.Println("user was put to databese")
+
 	return err
 }
 
-func (model UserModel) DeleteUser() {
+func (model UserModel) DeleteUserFromDB(id int) error {
+	if id == 2 { //TODO: temporary blocked deletion of admin from DB
+		return errors.New("you cant delete Admin!")
+	}
+	res, err := model.DB.Exec("DELETE FROM users WHERE id=$1", id)
+	if err != nil {
+		return err
+	}
 
+	numberOfRows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if numberOfRows < 1 {
+		return fmt.Errorf("user with id %d dont exists", id)
+	}
+	return err
 }
 
 func (model UserModel) GetAllUsersFromDB() ([]User, error) {

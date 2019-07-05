@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
 	"github.com/dgrijalva/jwt-go"
@@ -15,17 +16,18 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	user := models.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		log.Println("error with decoding user from json: ", err)
+		log.Error("error with decoding user from json: ", err)
 		w.WriteHeader(500)
 		return
 	}
 
 	user, err = h.M.FindUserInDB(user)
 	if err != nil {
-		log.Println("can't find this user: ", err)
+		log.Error("can't find this user: ", err)
 		w.WriteHeader(500)
 		return
 	}
+	log.Info("password is correct")
 
 	//lenghth of session for single user
 	expirationTime := time.Now().Add(5 * time.Minute)
@@ -53,6 +55,5 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		Expires: expirationTime,
 		Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
 	})
-	log.Println("You loged correctly")
-
+	log.Info("You loged correctly")
 }
