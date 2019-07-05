@@ -28,7 +28,8 @@ CREATE TABLE "public"."users"
 "id"      SERIAL NOT NULL,
 "name"    varchar(50) NOT NULL,
 "surname" varchar(50) NOT NULL,
-"email"   varchar(50) NOT NULL ,
+"email"   varchar(50) NOT NULL,
+"password"   text NOT NULL,
 "admin"   boolean NOT NULL
 
 );
@@ -54,6 +55,7 @@ ALTER TABLE "public"."users" OWNER TO testuser;
 CREATE TABLE "public"."events"
 (
 "id"       SERIAL NOT NULL,
+"name"  varchar(50) NOT NULL,
 "id_users" int NOT NULL,
 "date"     timestamp NOT NULL,
 "place"    text NOT NULL,
