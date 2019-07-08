@@ -12,10 +12,12 @@ import (
 func (h UserHandler) Get(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	ok, err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
+		w.WriteHeader(500)
 		log.Error("authentication failed: ", err)
 		return
 	}
 	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
 		log.Warn("you are not an admin")
 		return
 	}

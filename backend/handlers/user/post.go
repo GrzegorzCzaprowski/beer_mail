@@ -14,10 +14,12 @@ import (
 func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	ok, err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
+		w.WriteHeader(500)
 		log.Error("authentication failed: ", err)
 		return
 	}
 	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
 		log.Warn("you are not an admin")
 		return
 	}
@@ -33,6 +35,13 @@ func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter
 	err = h.M.InsertUserIntoDB(user)
 	if err != nil {
 		log.Error("error with inserting user to database: ", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		log.Error("error with encoding to json: ", err)
 		w.WriteHeader(500)
 		return
 	}

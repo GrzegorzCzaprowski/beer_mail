@@ -14,10 +14,12 @@ func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httproute
 	ok, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		log.Error("authentication failed: ", err)
+		w.WriteHeader(500)
 		return
 	}
 	if !ok {
 		log.Warn("something wrong with session") //TODO: cos tutaj nie teges, prawdopodobnie usunąć tego warna
+		w.WriteHeader(500)
 		return
 	}
 
@@ -35,5 +37,5 @@ func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httproute
 		w.WriteHeader(500)
 		return
 	}
-	log.Info("created ", user.Email)
+	// log.Info("created ", user.Email)
 }
