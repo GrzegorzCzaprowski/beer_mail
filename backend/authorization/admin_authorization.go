@@ -20,7 +20,7 @@ func AdminTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
 	tkn, err := jwt.ParseWithClaims(tokenstring, claims, func(token *jwt.Token) (interface{}, error) {
 		return models.JwtKey, nil
 	})
-	if !claims.IsAdmin && !tkn.Valid {
+	if !tkn.Valid {
 		return errors.New("token isn't valid")
 	}
 	if !claims.IsAdmin {
