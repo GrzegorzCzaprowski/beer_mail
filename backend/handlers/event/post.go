@@ -11,14 +11,9 @@ import (
 )
 
 func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	ok, err := authorization.UserTokenAuthentication(w, req)
+	err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		log.Error("authentication failed: ", err)
-		w.WriteHeader(500)
-		return
-	}
-	if !ok {
-		log.Warn("something wrong with session") //TODO: cos tutaj nie teges, prawdopodobnie usunąć tego warna
 		w.WriteHeader(500)
 		return
 	}

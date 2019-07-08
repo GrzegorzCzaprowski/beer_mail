@@ -1,31 +1,31 @@
 package authorization
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
 	"github.com/dgrijalva/jwt-go"
 )
 
-func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (bool, error) {
-	cookie, err := req.Cookie("token")
-	if err != nil {
-		return false, err
-	}
+func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
+	tokenstring := req.Header.Get("token")
 
-	tknStr := cookie.Value
+	if len(tokenstring) == 0 {
+		return errors.New("token dont exists")
+	}
 
 	claims := &models.Claims{}
 
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+	tkn, err := jwt.ParseWithClaims(tokenstring, claims, func(token *jwt.Token) (interface{}, error) {
 		return models.JwtKey, nil
 	})
 	if !tkn.Valid {
-		return false, nil
+		return errors.New("token isn't valid")
 	}
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

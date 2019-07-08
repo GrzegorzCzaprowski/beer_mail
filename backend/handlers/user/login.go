@@ -7,24 +7,29 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
 )
+
+type Login struct {
+	User  models.User
+	Token string
+}
 
 func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := models.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		log.Error("error with decoding user from json: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	user, err = h.M.FindUserInDB(user)
 	if err != nil {
-		log.Error("can't find this user: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "cant find this user: ", http.StatusInternalServerError)
 		return
 	}
 	log.Info("password is correct")
@@ -44,23 +49,26 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	// Create the JWT string
 	tokenString, err := token.SignedString(models.JwtKey)
 	if err != nil {
-		// If there is an error in creating the JWT return an internal server error
-		w.WriteHeader(http.StatusInternalServerError)
+		error_handler.Error(err, w, "error with creating token: ", http.StatusInternalServerError)
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-		Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
-	})
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "token",
+	// 	Value:   tokenString,
+	// 	Expires: expirationTime,
+	// 	Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
+	// })
 
-	err = json.NewEncoder(w).Encode(user)
-	if err != nil {
-		log.Error("error with encoding to json: ", err)
-		w.WriteHeader(500)
-		return
+	var login = Login{
+		User:  user,
+		Token: tokenString,
 	}
+
+	res := response.Resp{
+		Status: "succes",
+		Data:   login,
+	}
+	response.Writer(w, res, http.StatusOK)
 	log.Info("You loged correctly")
 }
