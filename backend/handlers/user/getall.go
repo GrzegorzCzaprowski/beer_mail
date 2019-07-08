@@ -12,13 +12,9 @@ import (
 
 func (h UserHandler) Get(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	ok, err := authorization.AdminTokenAuthentication(w, req)
+	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		error_handler.Error(error_handler.NotAdmin, w, "", http.StatusInternalServerError)
 		return
 	}
 

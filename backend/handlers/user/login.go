@@ -14,6 +14,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+type Login struct {
+	User  models.User
+	Token string
+}
+
 func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := models.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
@@ -48,16 +53,21 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-		Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
-	})
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "token",
+	// 	Value:   tokenString,
+	// 	Expires: expirationTime,
+	// 	Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
+	// })
+
+	var login = Login{
+		User:  user,
+		Token: tokenString,
+	}
 
 	res := response.Resp{
 		Status: "succes",
-		Data:   user,
+		Data:   login,
 	}
 	response.Writer(w, res, http.StatusOK)
 	log.Info("You loged correctly")
