@@ -55,5 +55,12 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		Expires: expirationTime,
 		Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
 	})
+
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		log.Error("error with encoding to json: ", err)
+		w.WriteHeader(500)
+		return
+	}
 	log.Info("You loged correctly")
 }

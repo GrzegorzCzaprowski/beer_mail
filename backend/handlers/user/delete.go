@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -30,9 +31,23 @@ func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params htt
 		return
 	}
 
+	user, err := h.M.GetUserBeforeDeletion(id)
+	if err != nil {
+		log.Error("can't get user: ", err)
+		w.WriteHeader(500)
+		return
+	}
+
 	err = h.M.DeleteUserFromDB(id)
 	if err != nil {
 		log.Error("can't delete user: ", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		log.Error("error with encoding to json: ", err)
 		w.WriteHeader(500)
 		return
 	}
