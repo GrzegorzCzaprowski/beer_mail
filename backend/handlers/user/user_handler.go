@@ -1,11 +1,14 @@
 package handlers
 
+import (
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+)
+
 type modelerUser interface {
-	CreateUser()
-	DeleteUser()
-	GetAllUsers()
-	Login()
-	Logout()
+	InsertUserIntoDB(models.User) error
+	DeleteUserFromDB(int) error
+	GetAllUsersFromDB() ([]models.User, error)
+	FindUserInDB(models.User) (models.User, error)
 }
 
 type UserHandler struct {
