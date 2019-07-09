@@ -13,6 +13,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+//Delete it delete user
 func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {

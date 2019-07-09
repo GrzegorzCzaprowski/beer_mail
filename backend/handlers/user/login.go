@@ -14,6 +14,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// Login logs user
 func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := models.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)

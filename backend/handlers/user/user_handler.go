@@ -12,6 +12,7 @@ type modelerUser interface {
 	GetUser(int) (models.User, error)
 }
 
+//UserHandler stradsas
 type UserHandler struct {
 	M modelerUser
 }

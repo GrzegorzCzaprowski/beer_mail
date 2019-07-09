@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//User returns user info
 func (h UserHandler) User(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	id, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {

@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//Post posts user
 func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {

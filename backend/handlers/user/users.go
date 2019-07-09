@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//Users returns all users
 func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
