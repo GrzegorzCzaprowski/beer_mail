@@ -9,8 +9,10 @@ type modelerUser interface {
 	DeleteUserFromDB(int) error
 	GetAllUsersFromDB() ([]models.User, error)
 	FindUserInDB(models.User) (models.User, error)
+	GetUser(int) (models.User, error)
 }
 
+//UserHandler stradsas
 type UserHandler struct {
 	M modelerUser
 }

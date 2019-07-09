@@ -10,14 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//Post event
 func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	ok, err := authorization.UserTokenAuthentication(w, req)
+	id, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		log.Error("authentication failed: ", err)
-		return
-	}
-	if !ok {
-		log.Warn("something wrong with session") //TODO: cos tutaj nie teges, prawdopodobnie usunąć tego warna
+		w.WriteHeader(500)
 		return
 	}
 
@@ -29,11 +27,12 @@ func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httproute
 		return
 	}
 
+	event.IDcreator = id
 	err = h.M.InsertEventIntoDB(event)
 	if err != nil {
 		log.Error("error with inserting user to database: ", err)
 		w.WriteHeader(500)
 		return
 	}
-	log.Info("created ", user.Email)
+	log.Info("created ", event.Name)
 }

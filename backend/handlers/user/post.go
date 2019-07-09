@@ -6,35 +6,38 @@ import (
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 )
 
+//Post posts user
 func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	ok, err := authorization.AdminTokenAuthentication(w, req)
+	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
-		log.Error("authentication failed: ", err)
-		return
-	}
-	if !ok {
-		log.Warn("you are not an admin")
+		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
 	user := models.User{}
 	err = json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		log.Error("error with decoding user from json: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	err = h.M.InsertUserIntoDB(user)
 	if err != nil {
-		log.Error("error with inserting user to database: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "error with inserting user to database: ", http.StatusInternalServerError)
 		return
 	}
+
+	res := response.Resp{
+		Status: "succes",
+		Data:   user,
+	}
+	response.Writer(w, res, http.StatusOK)
 	log.Info("created ", user.Email)
 }
