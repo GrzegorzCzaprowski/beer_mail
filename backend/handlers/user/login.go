@@ -14,6 +14,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// Login logs user
 func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := models.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
@@ -47,13 +48,6 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		error_handler.Error(err, w, "error with creating token: ", http.StatusInternalServerError)
 		return
 	}
-
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name:    "token",
-	// 	Value:   tokenString,
-	// 	Expires: expirationTime,
-	// 	Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
-	// })
 
 	res := response.Resp{
 		Status: "succes",

@@ -8,6 +8,7 @@ type modelerEvent interface {
 	InsertEventIntoDB(models.Event) error
 }
 
+//EventHandler sadasd
 type EventHandler struct {
 	M modelerEvent
 }

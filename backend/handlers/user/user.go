@@ -10,15 +10,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (h UserHandler) Get(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	err := authorization.AdminTokenAuthentication(w, req)
+//User returns user info
+func (h UserHandler) User(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	id, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
-	users, err := h.M.GetAllUsersFromDB()
+	user, err := h.M.GetUser(id)
 	if err != nil {
 		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
@@ -26,8 +26,8 @@ func (h UserHandler) Get(w http.ResponseWriter, req *http.Request, _ httprouter.
 
 	res := response.Resp{
 		Status: "succes",
-		Data:   users,
+		Data:   user,
 	}
 	response.Writer(w, res, http.StatusOK)
-	log.Info("got all users")
+	log.Info("got na user")
 }
