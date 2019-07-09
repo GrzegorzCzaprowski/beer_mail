@@ -45,7 +45,6 @@ func main() {
 		AllowedHeaders:   []string{"Authorization"},
 		//AllowedMethods:   []string{"GET, POST, DELETE, PATCH"},
 		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
 	})
 
 	handler := c.Handler(router)
