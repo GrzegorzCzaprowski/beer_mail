@@ -10,30 +10,33 @@ class Header extends React.Component {
             admin: 0
         };
     }
-    
-    getUserData = (e) => {
+    componentDidMount() {
         fetch('http://localhost:8000/user/', {
             method: "GET",
             headers: new Headers({
                 'Authorization' : "Bearer " + localStorage.getItem('token')
             })
-
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status == "succes"){
-                this.setState({
-                    name: data.name,
-                    admin: data.isadmin
-                })
-            }else {
-                console.log(data.data)
-            }
+        .then(response => {
+            response.json().then(data => {
+                if(response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+                if(data.status === "succes"){
+                    this.setState({
+                        name: data.data.name,
+                        admin: data.data.isadmin
+                    })
+                } else {
+                    console.log(data.data)
+                }
+            })
         })
         .catch(function(error) {
             console.log('Request failed', error)
         });
-    }
+     }
 
     logout = (e) => {
         localStorage.clear();
@@ -41,7 +44,6 @@ class Header extends React.Component {
     }
 
     render() {
-        this.getUserData()
         return (
             <div>
                 <Auth></Auth>
@@ -57,12 +59,15 @@ class Header extends React.Component {
                             <a className="nav-link" href="/admin">Admin<span className="sr-only">(current)</span></a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link disabled" href="#" tabIndex="-1" aria-disabled="true">Item 2</a>
+                            <a className="nav-link disabled" tabIndex="-1" aria-disabled="true">Item 2</a>
                         </li>
                         </ul>
                         <span className="navbar-text">
-                            {this.state.name}
+                            
                             <ul className="navbar-nav mr-auto">
+                                <li className="nav-item active d-none d-lg-block" onClick={this.logout}>
+                                    <a className="nav-link d-none d-lg-block" >{this.state.name}</a>
+                                </li>
                                 <li className="nav-item active" onClick={this.logout}>
                                     <a className="nav-link" >Wyloguj</a>
                                 </li>

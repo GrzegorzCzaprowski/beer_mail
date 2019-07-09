@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../img/logo.jpg'
-import axios from 'axios'
+
 
 class Login extends React.Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class Login extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            if(data.status == "succes"){
+            if(data.status === "succes"){
                 localStorage.setItem('token', data.data)
                 window.location.href = '/';
             }else {
