@@ -48,13 +48,6 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		return
 	}
 
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name:    "token",
-	// 	Value:   tokenString,
-	// 	Expires: expirationTime,
-	// 	Path:    "/", //USTAWIA COOKIE NA DOMYSLNY PATH /, WIEC COOKIE JEST DOSTEPNE WSZEDZIE KURWA
-	// })
-
 	res := response.Resp{
 		Status: "succes",
 		Data:   tokenString,

@@ -8,11 +8,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
+func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (int, error) {
 	tokenstring := req.Header.Get("token")
 
+	var id int
+
 	if len(tokenstring) == 0 {
-		return errors.New("token dont exists")
+		return id, errors.New("token dont exists")
 	}
 
 	claims := &models.Claims{}
@@ -21,11 +23,13 @@ func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
 		return models.JwtKey, nil
 	})
 	if !tkn.Valid {
-		return errors.New("token isn't valid")
+		return id, errors.New("token isn't valid")
 	}
 	if err != nil {
-		return err
+		return id, err
 	}
 
-	return nil
+	id = claims.ID
+
+	return id, nil
 }

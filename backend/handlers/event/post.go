@@ -11,7 +11,7 @@ import (
 )
 
 func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	err := authorization.UserTokenAuthentication(w, req)
+	_, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		log.Error("authentication failed: ", err)
 		w.WriteHeader(500)

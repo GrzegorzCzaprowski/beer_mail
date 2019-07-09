@@ -14,7 +14,6 @@ import (
 )
 
 func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
@@ -27,7 +26,7 @@ func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params htt
 		return
 	}
 
-	user, err := h.M.GetUserBeforeDeletion(id)
+	user, err := h.M.GetUser(id)
 	if err != nil {
 		error_handler.Error(err, w, "can't get user: ", http.StatusInternalServerError)
 		return
