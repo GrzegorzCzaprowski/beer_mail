@@ -12,6 +12,7 @@ import (
 	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/user"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 
 	_ "github.com/lib/pq"
 )
@@ -37,5 +38,16 @@ func main() {
 	eventHandler := event.EventHandler{M: eventModel}
 	router.POST("/event/post", eventHandler.Post)
 
-	log.Fatal(http.ListenAndServe(":8000", router))
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Authorization"},
+		//AllowedMethods:   []string{"GET, POST, DELETE, PATCH"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
+
+	handler := c.Handler(router)
+
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
