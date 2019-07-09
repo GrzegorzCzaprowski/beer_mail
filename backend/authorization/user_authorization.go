@@ -15,9 +15,6 @@ func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (int, err
 
 	AuthArr := strings.Split(header, " ")
 	var tokenString string
-	if len(tokenString) == 0 {
-		return id, errors.New("token dont exists")
-	}
 	if len(AuthArr) == 2 {
 		tokenString = AuthArr[1]
 	} else {
