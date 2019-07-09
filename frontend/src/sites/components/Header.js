@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../img/logo.jpg';
+import logo from '../../img/logo.jpg';
 import Auth from './Auth';
 
 class Header extends React.Component {
@@ -36,7 +36,7 @@ class Header extends React.Component {
         .catch(function(error) {
             console.log('Request failed', error)
         });
-     }
+    }
 
     logout = (e) => {
         localStorage.clear();
@@ -45,7 +45,7 @@ class Header extends React.Component {
 
     render() {
         return (
-            <div>
+            <header>
                 <Auth></Auth>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
                     
@@ -75,7 +75,7 @@ class Header extends React.Component {
                         </span>
                     </div>
                 </nav>
-            </div>
+            </header>
         );
     }
 

@@ -62,7 +62,7 @@ class Login extends React.Component {
         this.checkSorage(); 
         return (
             <div className="login-background">
-                <div className="container">
+                <div className="login-container">
                     <div className="login">
                         <div className="alert alert-danger text-center " htmlrole="alert" style={{display: this.state.showErr ? 'block': 'none'}}>
                             {this.state.err}
