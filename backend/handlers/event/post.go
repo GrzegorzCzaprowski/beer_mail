@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 )
@@ -14,25 +16,43 @@ import (
 func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	id, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
-		log.Error("authentication failed: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
 	event := models.Event{}
 	err = json.NewDecoder(req.Body).Decode(&event)
 	if err != nil {
-		log.Error("error with decoding user from json: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "error with decoding event from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	event.IDcreator = id
 	err = h.M.InsertEventIntoDB(event)
 	if err != nil {
-		log.Error("error with inserting user to database: ", err)
-		w.WriteHeader(500)
+		error_handler.Error(err, w, "error with inserting event to database: ", http.StatusInternalServerError)
 		return
 	}
+
+	user, err := h.M.GetCreator(id)
+	if err != nil {
+		error_handler.Error(err, w, "error with getting event's creator from database: ", http.StatusInternalServerError)
+		return
+	}
+	err = h.M.SendMailsToAllUsers(event, user)
+	if err != nil {
+		error_handler.Error(err, w, "error with sending emails to users: ", http.StatusInternalServerError)
+		return
+	}
+	log.Info("mails sended")
+
+	res := response.Resp{
+		Status: "succes",
+		Data:   event,
+	}
+	response.Writer(w, res, http.StatusOK) //nie zwraca id
 	log.Info("created ", event.Name)
+
+	///////////////
+
 }

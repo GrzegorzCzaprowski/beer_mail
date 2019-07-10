@@ -29,5 +29,5 @@ func (h UserHandler) User(w http.ResponseWriter, req *http.Request, _ httprouter
 		Data:   user,
 	}
 	response.Writer(w, res, http.StatusOK)
-	log.Info("got na user")
+	log.Info("got an user")
 }

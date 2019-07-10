@@ -5,8 +5,9 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 
 	event "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/event"
 	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/user"
@@ -25,6 +26,7 @@ func main() {
 	defer db.Close()
 
 	router := httprouter.New()
+	log.Info("program is running")
 
 	userModel := models.UserModel{DB: db}
 	userHandler := user.UserHandler{M: userModel}
@@ -38,6 +40,7 @@ func main() {
 	eventModel := models.EventModel{DB: db}
 	eventHandler := event.EventHandler{M: eventModel}
 	router.POST("/event/post", eventHandler.Post)
+	router.GET("/event/get", eventHandler.Events)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},

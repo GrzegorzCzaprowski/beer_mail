@@ -6,6 +6,9 @@ import (
 
 type modelerEvent interface {
 	InsertEventIntoDB(models.Event) error
+	SendMailsToAllUsers(models.Event, models.User) error
+	GetCreator(int) (models.User, error)
+	GetAllEventsFromDB() ([]models.Event, error)
 }
 
 //EventHandler sadasd

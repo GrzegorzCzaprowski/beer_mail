@@ -10,24 +10,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//Users returns all users
-func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	err := authorization.AdminTokenAuthentication(w, req)
+func (h EventHandler) Events(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	_, err := authorization.UserTokenAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
-	users, err := h.M.GetAllUsersFromDB()
+	events, err := h.M.GetAllEventsFromDB()
 	if err != nil {
-		error_handler.Error(err, w, "error with getting users from database: ", http.StatusInternalServerError)
+		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	res := response.Resp{
 		Status: "succes",
-		Data:   users,
+		Data:   events,
 	}
 	response.Writer(w, res, http.StatusOK)
-	log.Info("got all users")
+	log.Info("got all events")
 }
