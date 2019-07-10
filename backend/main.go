@@ -41,6 +41,7 @@ func main() {
 	eventHandler := event.EventHandler{M: eventModel}
 	router.POST("/event/post", eventHandler.Post)
 	router.GET("/event/get", eventHandler.Events)
+	router.DELETE("/event/delete/:id/", eventHandler.Delete)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},

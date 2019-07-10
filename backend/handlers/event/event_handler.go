@@ -9,6 +9,8 @@ type modelerEvent interface {
 	SendMailsToAllUsers(models.Event, models.User) error
 	GetCreator(int) (models.User, error)
 	GetAllEventsFromDB() ([]models.Event, error)
+	GetEvent(int) (models.Event, error)
+	DeleteEventFromDB(int) error
 }
 
 //EventHandler sadasd

@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 
@@ -73,7 +74,48 @@ func (model EventModel) GetCreator(id int) (User, error) {
 }
 
 func (model EventModel) GetAllEventsFromDB() ([]Event, error) {
-	return nil, nil
+	var events []Event
+	rows, err := model.DB.Query("SELECT * FROM events")
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		event := Event{}
+		err := rows.Scan(&event.ID, &event.Name, &event.IDcreator, &event.Date, &event.Place)
+		if err != nil {
+			return events, err
+		}
+		events = append(events, event)
+	}
+	return events, rows.Err()
+}
+
+func (model EventModel) DeleteEventFromDB(id int) error {
+	res, err := model.DB.Exec("DELETE FROM events WHERE id=$1", id)
+	if err != nil {
+		return err
+	}
+
+	numberOfRows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if numberOfRows < 1 {
+		return fmt.Errorf("event with id %d dont exists", id)
+	}
+	return err
+}
+
+func (model EventModel) GetEvent(id int) (Event, error) {
+	var event Event
+	row := model.DB.QueryRow("SELECT * FROM events WHERE id=$1", id)
+	err := row.Scan(&event.ID, &event.Name, &event.IDcreator, &event.Date, &event.Place)
+	if err != nil {
+		return event, err
+	}
+	return event, nil
+
 }
 
 func createMessage(event Event, user, creator User) *gomail.Message {
