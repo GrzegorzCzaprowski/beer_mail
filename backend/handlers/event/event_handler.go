@@ -5,12 +5,13 @@ import (
 )
 
 type modelerEvent interface {
-	InsertEventIntoDB(models.Event) error
+	InsertEventIntoDB(models.Event) (int, error)
 	SendMailsToAllUsers(models.Event, models.User) error
 	GetCreator(int) (models.User, error)
 	GetAllEventsFromDB() ([]models.Event, error)
 	GetEvent(int) (models.Event, error)
 	DeleteEventFromDB(int) error
+	ConfirmEventForUser(eventID, userID int) error
 }
 
 //EventHandler sadasd

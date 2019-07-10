@@ -28,11 +28,12 @@ func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httproute
 	}
 
 	event.IDcreator = id
-	err = h.M.InsertEventIntoDB(event)
+	eventID, err := h.M.InsertEventIntoDB(event)
 	if err != nil {
 		error_handler.Error(err, w, "error with inserting event to database: ", http.StatusInternalServerError)
 		return
 	}
+	event.ID = eventID
 
 	user, err := h.M.GetCreator(id)
 	if err != nil {
