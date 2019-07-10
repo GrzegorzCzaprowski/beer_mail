@@ -7,7 +7,7 @@ class Header extends React.Component {
         super(props);
         this.state = {
             name: '',
-            admin: 0
+            admin: false
         };
     }
     componentDidMount() {

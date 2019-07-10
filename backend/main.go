@@ -43,7 +43,7 @@ func main() {
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Authorization"},
-		//AllowedMethods:   []string{"GET, POST, DELETE, PATCH"},
+		AllowedMethods:   []string{"GET", "POST", "DELETE"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})

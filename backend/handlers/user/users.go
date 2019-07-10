@@ -14,7 +14,7 @@ import (
 func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	err := authorization.AdminTokenAuthentication(w, req)
 	if err != nil {
-		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
+		error_handler.Error(err, w, "authentication failed: ", http.StatusUnauthorized)
 		return
 	}
 
