@@ -11,7 +11,7 @@ type modelerEvent interface {
 	GetAllEventsFromDB() ([]models.Event, error)
 	GetEvent(int) (models.Event, error)
 	DeleteEventFromDB(int) error
-	ConfirmEventForUser(eventID, userID int) error
+	ConfirmEventForUser(int, int, bool) error
 }
 
 //EventHandler sadasd

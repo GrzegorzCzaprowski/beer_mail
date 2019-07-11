@@ -13,11 +13,12 @@ import (
 )
 
 type Event struct {
-	ID        int    `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	IDcreator int    `json:"idcreator,omitempty"`
-	Date      string `json:"date,omitempty"`
-	Place     string `json:"place,omitempty"`
+	ID        int     `json:"id,omitempty"`
+	Name      string  `json:"name,omitempty"`
+	IDcreator int     `json:"idcreator,omitempty"`
+	Date      string  `json:"date,omitempty"`
+	Place     string  `json:"place,omitempty"`
+	Guests    []Guest `json:"guests,omitempty"`
 }
 
 type EventModel struct {
@@ -27,7 +28,15 @@ type EventModel struct {
 type ClaimsC struct {
 	UserID  int
 	EventID int
+	Confirm bool
 	jwt.StandardClaims
+}
+
+type Guest struct {
+	Name    string `json:"name,omitempty"`
+	Surname string `json:"surname,omitempty"`
+	Email   string `json:"email,omitempty"`
+	Confirm string `json:"confirm,omitempty"`
 }
 
 func (model EventModel) InsertEventIntoDB(event Event) (int, error) {
@@ -104,6 +113,36 @@ func (model EventModel) GetAllEventsFromDB() ([]Event, error) {
 		if err != nil {
 			return events, err
 		}
+		///////
+		var guests []Guest
+		rows2, err := model.DB.Query("SELECT * FROM guests WHERE id_events=$1", event.ID)
+		for rows2.Next() {
+			guest := Guest{}
+			var bla string
+			var bla2 string
+			var guestID int
+			var tof string
+			_ = rows2.Scan(&bla, &bla2, &guestID, &tof)
+			if err != nil {
+				return nil, err
+			}
+			guest.Confirm = tof
+
+			user, err := model.GetUser(guestID)
+			if err != nil {
+				return nil, err
+			}
+			guest.Name = user.Name
+			guest.Surname = user.Surname
+			guest.Email = user.Email
+
+			guests = append(guests, guest)
+		}
+		if err != nil {
+			return nil, err
+		}
+		event.Guests = guests
+		///////
 		events = append(events, event)
 	}
 	return events, rows.Err()
@@ -135,8 +174,8 @@ func (model EventModel) GetEvent(id int) (Event, error) {
 	return event, nil
 }
 
-func (model EventModel) ConfirmEventForUser(eventID, userID int) error {
-	res, err := model.DB.Exec("UPDATE guests SET confirm = true WHERE id_events=$1 AND id_users=$2", eventID, userID)
+func (model EventModel) ConfirmEventForUser(eventID, userID int, confirm bool) error {
+	res, err := model.DB.Exec("UPDATE guests SET confirm =$1 WHERE id_events=$2 AND id_users=$3", confirm, eventID, userID)
 	if err != nil {
 		return err
 	}
@@ -157,6 +196,7 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 	claims := &ClaimsC{
 		UserID:  user.ID,
 		EventID: event.ID,
+		Confirm: true,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -164,9 +204,17 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Create the JWT string
-	tokenString, err := token.SignedString(JwtKey)
+	tokenStringConfirm, err := token.SignedString(JwtKey)
 	if err != nil {
+		return nil
+	}
 
+	claims.Confirm = false
+
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// Create the JWT string
+	tokenStringDeny, err := token.SignedString(JwtKey)
+	if err != nil {
 		return nil
 	}
 	m := gomail.NewMessage()
@@ -175,6 +223,19 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 	m.SetAddressHeader("Cc", user.Email, user.Name+" "+user.Surname)
 	m.SetHeader("Subject", event.Name)
 
-	m.SetBody("text/html", "at: "+event.Date+", "+creator.Name+" invites you for beer in "+event.Place+"\n http://localhost:8000/event/confirm/"+tokenString)
+	m.SetBody("text/html", "at: "+event.Date+", "+creator.Name+" invites you for beer in "+event.Place+
+		"\n if you want to confirm click this link: http://localhost:8000/event/confirm/"+tokenStringConfirm+
+		"\n if you want to deny click this link: http://localhost:8000/event/confirm/"+tokenStringDeny)
 	return m
+}
+
+func (model EventModel) GetUser(id int) (User, error) {
+	var user User
+	row := model.DB.QueryRow("SELECT * FROM users WHERE id=$1", id)
+	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.Email, &user.Surname, &user.IsAdmin)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+
 }

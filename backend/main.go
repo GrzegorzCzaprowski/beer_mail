@@ -42,7 +42,7 @@ func main() {
 	router.POST("/event/post", eventHandler.Post)
 	router.GET("/event/get", eventHandler.Events)
 	router.DELETE("/event/delete/:id", eventHandler.Delete)
-	router.GET("/event/confirm/:token", eventHandler.Confirm)
+	router.GET("/event/confirm/:token", eventHandler.ConfirmLink)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},

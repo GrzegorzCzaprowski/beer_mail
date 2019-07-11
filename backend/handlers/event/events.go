@@ -19,9 +19,11 @@ func (h EventHandler) Events(w http.ResponseWriter, req *http.Request, _ httprou
 
 	events, err := h.M.GetAllEventsFromDB()
 	if err != nil {
-		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
+		error_handler.Error(err, w, "error with database: ", http.StatusInternalServerError)
 		return
 	}
+
+	//guests, err := h.M.GetAllGuestsFromDB()
 
 	res := response.Resp{
 		Status: "succes",
