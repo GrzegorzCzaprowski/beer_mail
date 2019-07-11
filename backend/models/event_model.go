@@ -37,7 +37,7 @@ func (model EventModel) InsertEventIntoDB(event Event) (int, error) {
 }
 
 func (model EventModel) InsertGuestIntoDB(eventID, userID int) error {
-	_, err := model.DB.Exec("INSERT INTO guests(id_events, id_users, confirm) VALUES($1, $2, $3)", eventID, userID, false)
+	_, err := model.DB.Exec("INSERT INTO guests(id_events, id_users) VALUES($1, $2)", eventID, userID)
 	if err, ok := err.(*pq.Error); ok {
 		if err.Code == "23505" {
 			return err

@@ -59,9 +59,6 @@ func (model UserModel) InsertUserIntoDB(user User) error {
 }
 
 func (model UserModel) DeleteUserFromDB(id int) error {
-	if id == 2 { //TODO: temporary blocked deletion of admin from DB
-		return errors.New("you cant delete Admin!")
-	}
 	res, err := model.DB.Exec("DELETE FROM users WHERE id=$1", id)
 	if err != nil {
 		return err
