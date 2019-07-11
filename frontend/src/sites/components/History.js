@@ -71,8 +71,16 @@ class History extends React.Component {
                 <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadEvents}><FontAwesomeIcon icon={faSyncAlt} /></button>
             </Search>
         </div>
-        <div className="col-11 border-top">
-            
+        <div className="row ml-4 mr-4 border-top">
+            {
+                this.state.copyData.map((event, i) => {
+                    return (
+                        <div className="col-12">
+                            {event.name}
+                        </div>
+                    )
+                })
+            }
         </div>
 
      </div>
