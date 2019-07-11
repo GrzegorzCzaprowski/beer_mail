@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -20,10 +20,10 @@ func AdminTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
 		return errors.New("token isn't valid")
 	}
 
-	claims := &models.Claims{}
+	claims := &modelsU.Claims{}
 
 	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return models.JwtKey, nil
+		return modelsU.JwtKey, nil
 	})
 	if !tkn.Valid {
 		return errors.New("token isn't valid")

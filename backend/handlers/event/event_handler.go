@@ -1,15 +1,16 @@
 package handlers
 
 import (
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsE"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 )
 
 type modelerEvent interface {
-	InsertEventIntoDB(models.Event) (int, error)
-	SendMailsToAllUsers(models.Event, models.User) error
-	GetCreator(int) (models.User, error)
-	GetAllEventsFromDB() ([]models.Event, error)
-	GetEvent(int) (models.Event, error)
+	InsertEventIntoDB(modelsE.Event) (int, error)
+	SendMailsToAllUsers(modelsE.Event, modelsU.User) error
+	GetCreator(int) (modelsU.User, error)
+	GetAllEventsFromDB() ([]modelsE.Event, error)
+	GetEvent(int) (modelsE.Event, error)
 	DeleteEventFromDB(int) error
 	ConfirmEventForUser(int, int, bool) error
 }

@@ -11,7 +11,8 @@ import (
 
 	event "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/event"
 	user "github.com/GrzegorzCzaprowski/beer_mail/backend/handlers/user"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsE"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 
@@ -28,7 +29,7 @@ func main() {
 	router := httprouter.New()
 	log.Info("program is running")
 
-	userModel := models.UserModel{DB: db}
+	userModel := modelsU.UserModel{DB: db}
 	userHandler := user.UserHandler{M: userModel}
 	router.POST("/user/post", userHandler.Post)
 	router.POST("/user/login", userHandler.Login)
@@ -37,7 +38,7 @@ func main() {
 	router.POST("/user/logout", userHandler.Logout)
 	router.GET("/user", userHandler.User)
 
-	eventModel := models.EventModel{DB: db}
+	eventModel := modelsE.EventModel{DB: db}
 	eventHandler := event.EventHandler{M: eventModel}
 	router.POST("/event/post", eventHandler.Post)
 	router.GET("/event/get", eventHandler.Events)

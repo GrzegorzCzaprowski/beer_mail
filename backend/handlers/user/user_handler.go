@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 )
 
 type modelerUser interface {
-	InsertUserIntoDB(models.User) error
+	InsertUserIntoDB(modelsU.User) error
 	DeleteUserFromDB(int) error
-	GetAllUsersFromDB() ([]models.User, error)
-	FindUserInDB(models.User) (models.User, error)
-	GetUser(int) (models.User, error)
+	GetAllUsersFromDB() ([]modelsU.User, error)
+	FindUserInDB(modelsU.User) (modelsU.User, error)
+	GetUser(int) (modelsU.User, error)
 }
 
 //UserHandler stradsas

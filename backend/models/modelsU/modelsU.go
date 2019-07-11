@@ -1,4 +1,4 @@
-package models
+package modelsU
 
 import (
 	"database/sql"
@@ -100,5 +100,4 @@ func (model UserModel) GetUser(id int) (User, error) {
 		return user, err
 	}
 	return user, nil
-
 }

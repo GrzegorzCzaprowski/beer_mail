@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsE"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/julienschmidt/httprouter"
@@ -34,11 +35,11 @@ func (h EventHandler) ConfirmLink(w http.ResponseWriter, req *http.Request, para
 	}
 }
 
-func claims(tokenString string) (*models.ClaimsC, error) {
-	claims := &models.ClaimsC{}
+func claims(tokenString string) (*modelsE.ClaimsC, error) {
+	claims := &modelsE.ClaimsC{}
 
 	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return models.JwtKey, nil
+		return modelsU.JwtKey, nil
 	})
 	if !tkn.Valid {
 		return claims, errors.New("token isn't valid")

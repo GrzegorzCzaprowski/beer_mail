@@ -1,14 +1,14 @@
-package models
+package modelsE
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/dgrijalva/jwt-go"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"
 )
 
@@ -56,14 +56,14 @@ func (model EventModel) InsertGuestIntoDB(eventID, userID int) error {
 	return err
 }
 
-func (model EventModel) SendMailsToAllUsers(event Event, creator User) error {
+func (model EventModel) SendMailsToAllUsers(event Event, creator modelsU.User) error {
 	rows, err := model.DB.Query("SELECT * FROM users")
 	if err != nil {
 		return err
 	}
 
 	for rows.Next() {
-		user := User{}
+		user := modelsU.User{}
 		err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.IsAdmin)
 		if err != nil {
 			return err
@@ -89,8 +89,8 @@ func (model EventModel) SendMailsToAllUsers(event Event, creator User) error {
 	return rows.Err()
 }
 
-func (model EventModel) GetCreator(id int) (User, error) {
-	var user User
+func (model EventModel) GetCreator(id int) (modelsU.User, error) {
+	var user modelsU.User
 	row := model.DB.QueryRow("SELECT * FROM users WHERE id=$1", id)
 	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.Email, &user.Surname, &user.IsAdmin)
 	if err != nil {
@@ -113,7 +113,7 @@ func (model EventModel) GetAllEventsFromDB() ([]Event, error) {
 		if err != nil {
 			return events, err
 		}
-		///////
+		//	//	//	//
 		var guests []Guest
 		rows2, err := model.DB.Query("SELECT * FROM guests WHERE id_events=$1", event.ID)
 		for rows2.Next() {
@@ -190,7 +190,7 @@ func (model EventModel) ConfirmEventForUser(eventID, userID int, confirm bool) e
 	return err
 }
 
-func createMessage(event Event, user, creator User) *gomail.Message {
+func createMessage(event Event, user, creator modelsU.User) *gomail.Message {
 	expirationTime := time.Now().Add(480 * time.Minute)
 
 	claims := &ClaimsC{
@@ -204,7 +204,7 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Create the JWT string
-	tokenStringConfirm, err := token.SignedString(JwtKey)
+	tokenStringConfirm, err := token.SignedString(modelsU.JwtKey)
 	if err != nil {
 		return nil
 	}
@@ -213,7 +213,7 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Create the JWT string
-	tokenStringDeny, err := token.SignedString(JwtKey)
+	tokenStringDeny, err := token.SignedString(modelsU.JwtKey)
 	if err != nil {
 		return nil
 	}
@@ -229,8 +229,8 @@ func createMessage(event Event, user, creator User) *gomail.Message {
 	return m
 }
 
-func (model EventModel) GetUser(id int) (User, error) {
-	var user User
+func (model EventModel) GetUser(id int) (modelsU.User, error) {
+	var user modelsU.User
 	row := model.DB.QueryRow("SELECT * FROM users WHERE id=$1", id)
 	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.Email, &user.Surname, &user.IsAdmin)
 	if err != nil {

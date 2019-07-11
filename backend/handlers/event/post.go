@@ -6,7 +6,7 @@ import (
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsE"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
@@ -20,7 +20,7 @@ func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httproute
 		return
 	}
 
-	event := models.Event{}
+	event := modelsE.Event{}
 	err = json.NewDecoder(req.Body).Decode(&event)
 	if err != nil {
 		error_handler.Error(err, w, "error with decoding event from json: ", http.StatusInternalServerError)
