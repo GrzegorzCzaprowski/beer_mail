@@ -31,7 +31,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	log.Info("password is correct")
 
 	//lenghth of session for single user
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(480 * time.Minute)
 
 	claims := &models.Claims{
 		ID:      user.ID,

@@ -85,7 +85,7 @@ CREATE TABLE "public"."guests"
 "id"        SERIAL NOT NULL,
 "id_events" int NOT NULL,
 "id_users"  int NOT NULL,
-"confirm"   boolean NOT NULL,
+"confirm"   boolean,
 CONSTRAINT "FK_34" FOREIGN KEY ( "id_events" ) REFERENCES "public"."events" ( "id" ),
 CONSTRAINT "FK_37" FOREIGN KEY ( "id_users" ) REFERENCES "public"."users" ( "id" )
 );
