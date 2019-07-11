@@ -20,7 +20,7 @@ func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httproute
 
 	users, err := h.M.GetAllUsersFromDB()
 	if err != nil {
-		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
+		error_handler.Error(err, w, "error with getting users from database: ", http.StatusInternalServerError)
 		return
 	}
 
