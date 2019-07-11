@@ -18,7 +18,7 @@ code {
   background-color: #d8d8d8;
 }
 
-.container {
+.login-container {
   width: 70vw;
   top: 50%;
   position: fixed;
@@ -32,7 +32,15 @@ code {
 }
 
 @media screen and (min-width: 1200px) {
-  .container {
+  .login-container {
     width: 50vw;
   }
+}
+
+.container {
+  margin-top: 100px;
+}
+
+th {
+  border-bottom: 0px !important;
 }

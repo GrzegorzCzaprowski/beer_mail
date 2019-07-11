@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './includes/App';
-import Login from './includes/Login';
+import App from './sites/App';
+import Login from './sites/Login';
+import Admin from './sites/Admin';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Switch, Route} from 'react-router-dom';
 
@@ -12,6 +13,7 @@ ReactDOM.render(
             <Switch>
                 <Route exact path="/" component={App}/>
                 <Route exact path="/login" component={Login}/>
+                <Route exact path="/admin" component={Admin}/>
             </Switch>
         </div>
     </BrowserRouter>,
