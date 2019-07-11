@@ -1,5 +1,7 @@
 import React from 'react';
 import Header from './components/Header';
+import History from './components/History';
+
 
 class App extends React.Component {
 
@@ -59,7 +61,7 @@ class App extends React.Component {
             </div>
           </div>
           <div className="row main border-left border-right ">
-          
+            <History style={{display: this.state.location.history ? "block": "none"}} styleName="col-12 mt-3"></History>
           </div>
         </div>
      </div>
