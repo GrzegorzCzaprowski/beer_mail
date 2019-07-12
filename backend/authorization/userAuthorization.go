@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/dgrijalva/jwt-go"
 )
 
-func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (int, error) {
+func UserAuthentication(w http.ResponseWriter, req *http.Request) (int, error) {
 	header := req.Header.Get("Authorization")
 	var id int
 
@@ -21,10 +21,10 @@ func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (int, err
 		return id, errors.New("token isn't valid")
 	}
 
-	claims := &models.Claims{}
+	claims := &modelsU.Claims{}
 
 	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return models.JwtKey, nil
+		return modelsU.JwtKey, nil
 	})
 	if !tkn.Valid {
 		return id, errors.New("token isn't valid")

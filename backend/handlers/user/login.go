@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/models"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
@@ -16,14 +16,14 @@ import (
 
 // Login logs user
 func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	user := models.User{}
+	user := modelsU.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
 		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
-	user, err = h.M.FindUserInDB(user)
+	user, err = h.M.FindUser(user)
 	if err != nil {
 		error_handler.Error(err, w, "cant find this user: ", http.StatusInternalServerError)
 		return
@@ -33,7 +33,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	//lenghth of session for single user
 	expirationTime := time.Now().Add(480 * time.Minute)
 
-	claims := &models.Claims{
+	claims := &modelsU.Claims{
 		ID:      user.ID,
 		IsAdmin: user.IsAdmin,
 		StandardClaims: jwt.StandardClaims{
@@ -43,7 +43,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Create the JWT string
-	tokenString, err := token.SignedString(models.JwtKey)
+	tokenString, err := token.SignedString(modelsU.JwtKey)
 	if err != nil {
 		error_handler.Error(err, w, "error with creating token: ", http.StatusInternalServerError)
 		return

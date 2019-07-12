@@ -12,13 +12,13 @@ import (
 
 //Users returns all users
 func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	err := authorization.AdminTokenAuthentication(w, req)
+	err := authorization.AdminAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusUnauthorized)
 		return
 	}
 
-	users, err := h.M.GetAllUsersFromDB()
+	users, err := h.M.GetAllUsers()
 	if err != nil {
 		error_handler.Error(err, w, "error with getting users from database: ", http.StatusInternalServerError)
 		return
