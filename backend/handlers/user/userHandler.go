@@ -5,10 +5,10 @@ import (
 )
 
 type modelerUser interface {
-	InsertUserIntoDB(modelsU.User) error
-	DeleteUserFromDB(int) error
-	GetAllUsersFromDB() ([]modelsU.User, error)
-	FindUserInDB(modelsU.User) (modelsU.User, error)
+	InsertUser(modelsU.User) error
+	DeleteUser(int) error
+	GetAllUsers() ([]modelsU.User, error)
+	FindUser(modelsU.User) (modelsU.User, error)
 	GetUser(int) (modelsU.User, error)
 }
 

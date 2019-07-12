@@ -11,13 +11,13 @@ import (
 )
 
 func (h EventHandler) Events(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	_, err := authorization.UserTokenAuthentication(w, req)
+	_, err := authorization.UserAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
-	events, err := h.M.GetAllEventsFromDB()
+	events, err := h.M.GetAllEvents()
 	if err != nil {
 		error_handler.Error(err, w, "error with database: ", http.StatusInternalServerError)
 		return

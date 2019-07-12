@@ -15,7 +15,7 @@ import (
 
 //Post posts user
 func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	err := authorization.AdminTokenAuthentication(w, req)
+	err := authorization.AdminAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
@@ -28,7 +28,7 @@ func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter
 		return
 	}
 
-	err = h.M.InsertUserIntoDB(user)
+	err = h.M.InsertUser(user)
 	if err != nil {
 		error_handler.Error(err, w, "error with inserting user to database: ", http.StatusInternalServerError)
 		return

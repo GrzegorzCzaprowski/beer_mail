@@ -15,7 +15,7 @@ import (
 
 //Delete it delete user
 func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
-	err := authorization.AdminTokenAuthentication(w, req)
+	err := authorization.AdminAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
@@ -33,7 +33,7 @@ func (h UserHandler) Delete(w http.ResponseWriter, req *http.Request, params htt
 		return
 	}
 
-	err = h.M.DeleteUserFromDB(id)
+	err = h.M.DeleteUser(id)
 	if err != nil {
 		error_handler.Error(err, w, "can't delete user: ", http.StatusInternalServerError)
 		return

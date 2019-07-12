@@ -23,7 +23,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 		return
 	}
 
-	user, err = h.M.FindUserInDB(user)
+	user, err = h.M.FindUser(user)
 	if err != nil {
 		error_handler.Error(err, w, "cant find this user: ", http.StatusInternalServerError)
 		return

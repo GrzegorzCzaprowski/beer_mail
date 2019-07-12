@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func UserTokenAuthentication(w http.ResponseWriter, req *http.Request) (int, error) {
+func UserAuthentication(w http.ResponseWriter, req *http.Request) (int, error) {
 	header := req.Header.Get("Authorization")
 	var id int
 

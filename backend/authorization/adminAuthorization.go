@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func AdminTokenAuthentication(w http.ResponseWriter, req *http.Request) error {
+func AdminAuthentication(w http.ResponseWriter, req *http.Request) error {
 	header := req.Header.Get("Authorization")
 
 	AuthArr := strings.Split(header, " ")

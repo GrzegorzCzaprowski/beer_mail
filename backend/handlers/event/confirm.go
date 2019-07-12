@@ -22,16 +22,25 @@ func (h EventHandler) ConfirmLink(w http.ResponseWriter, req *http.Request, para
 		return
 	}
 
-	h.M.ConfirmEventForUser(claims.EventID, claims.UserID, claims.Confirm)
+	err = h.M.ConfirmEvent(claims.EventID, claims.UserID, claims.Confirm)
 	if err != nil {
 		log.Error("error with confirming user for this event: ", err)
 		return
 	}
-
+	event, err := h.M.GetEvent(claims.EventID)
+	if err != nil {
+		log.Error("error with geting event: ", err)
+		return
+	}
+	user, err := h.M.GetUser(claims.UserID)
+	if err != nil {
+		log.Error("error with geting user: ", err)
+		return
+	}
 	if claims.Confirm {
-		log.Info(fmt.Sprintf("User with ID %d confirmed his participation in event with ID %d", claims.UserID, claims.EventID))
+		log.Info(fmt.Sprintf("User %s confirmed his participation in event %s", user.Name, event.Name))
 	} else {
-		log.Info(fmt.Sprintf("User with ID %d denied his participation in event with ID %d", claims.UserID, claims.EventID))
+		log.Info(fmt.Sprintf("User %s denied his participation in event %s", user.Name, event.Name))
 	}
 }
 
