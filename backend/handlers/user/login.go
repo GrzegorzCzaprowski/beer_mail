@@ -7,7 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/errorHandler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/dgrijalva/jwt-go"
@@ -19,13 +19,13 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	user := modelsU.User{}
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	user, err = h.M.FindUser(user)
 	if err != nil {
-		error_handler.Error(err, w, "cant find this user: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "cant find this user: ", http.StatusInternalServerError)
 		return
 	}
 	log.Info("password is correct")
@@ -45,7 +45,7 @@ func (h UserHandler) Login(w http.ResponseWriter, req *http.Request, _ httproute
 	// Create the JWT string
 	tokenString, err := token.SignedString(modelsU.JwtKey)
 	if err != nil {
-		error_handler.Error(err, w, "error with creating token: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with creating token: ", http.StatusInternalServerError)
 		return
 	}
 

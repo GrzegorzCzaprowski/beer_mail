@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/errorHandler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsE"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
@@ -17,32 +17,32 @@ import (
 func (h EventHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	id, err := authorization.UserAuthentication(w, req)
 	if err != nil {
-		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
 	event := modelsE.Event{}
 	err = json.NewDecoder(req.Body).Decode(&event)
 	if err != nil {
-		error_handler.Error(err, w, "error with decoding event from json: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with decoding event from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	event.IDcreator = strconv.Itoa(id)
 	eventID, err := h.M.InsertEvent(event)
 	if err != nil {
-		error_handler.Error(err, w, "error with inserting event to database: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with inserting event to database: ", http.StatusInternalServerError)
 		return
 	}
 	event.ID = eventID
 	creator, err := h.M.GetUser(id)
 	if err != nil {
-		error_handler.Error(err, w, "error with getting creator's event from database: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with getting creator's event from database: ", http.StatusInternalServerError)
 		return
 	}
 	err = h.M.SendMails(event, creator)
 	if err != nil {
-		error_handler.Error(err, w, "error with sending emails to users: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with sending emails to users: ", http.StatusInternalServerError)
 		return
 	}
 	log.Info("mails sended")

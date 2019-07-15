@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/errorHandler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
@@ -17,20 +17,20 @@ import (
 func (h UserHandler) Post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	err := authorization.AdminAuthentication(w, req)
 	if err != nil {
-		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
 	user := modelsU.User{}
 	err = json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		error_handler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with decoding user from json: ", http.StatusInternalServerError)
 		return
 	}
 
 	err = h.M.InsertUser(user)
 	if err != nil {
-		error_handler.Error(err, w, "error with inserting user to database: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with inserting user to database: ", http.StatusInternalServerError)
 		return
 	}
 

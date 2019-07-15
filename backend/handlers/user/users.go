@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
-	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
+	"github.com/GrzegorzCzaprowski/beer_mail/backend/errorHandler"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/response"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
@@ -14,13 +14,13 @@ import (
 func (h UserHandler) Users(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	err := authorization.AdminAuthentication(w, req)
 	if err != nil {
-		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
 	users, err := h.M.GetAllUsers()
 	if err != nil {
-		error_handler.Error(err, w, "error with getting users from database: ", http.StatusInternalServerError)
+		errorHandler.Error(err, w, "error with getting users from database: ", http.StatusInternalServerError)
 		return
 	}
 
