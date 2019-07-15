@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import Modal from './Modal';
+import Modal, {ModalForm, ModalBody} from './Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +25,7 @@ class Allusers extends React.Component {
             userAdmin: false,
             info: ""
         };
+        this.userForm = React.createRef();
 
         this.deleteUser = this.deleteUser.bind(this)
         this.filterData = this.filterData.bind(this)
@@ -83,6 +84,7 @@ class Allusers extends React.Component {
                         showErr:false,
                         info: " User "+json.data.name+" "+json.data.surname +" succesfully deleted."
                     })
+                    console.log(json.data)
                     this.loadUsers()
                 } else {
                     this.setState({
@@ -165,7 +167,6 @@ class Allusers extends React.Component {
     handleSearch = (e) => {
         this.setState({ nameFilter: e.target.value }) 
     }
-
     render() {
         return (
             <div className={classnames('allusers', this.props.styleName)}>
@@ -176,12 +177,14 @@ class Allusers extends React.Component {
                 <div className="alert alert-danger text-center mb-2" htmlrole="alert" style={{display: this.state.showErr ? 'block': 'none'}}>
                     {this.state.err}
                 </div>
-                <Modal styleName="fade" title="Are you sure?" button="Delete" id="usermodal" parentFunc={this.deleteUser} item={this.state.userToDelete}>
-                    <p>Do you want to delete this user. The change is irreversible.</p>
+                <Modal styleName="fade" title="Are you sure?" id="usermodal">
+                    <ModalBody parentFunc={this.deleteUser} item={this.state.userToDelete} button="Delete">
+                        <p>Do you want to delete this user. The change is irreversible.</p>
+                    </ModalBody>
                 </Modal>
-                <form>
-                <Modal styleName="fade" title="Add user" button="Add" id="addusermodal" parentFunc={this.addUser} >
-                    
+                
+                <Modal styleName="fade" title="Add user"  id="addusermodal" >
+                    <ModalForm submit={this.addUser} button="Add">
                         <label htmlFor="name">Name</label>
                         <input id="name" type="text" placeholder="Enter name" className="form-control" onChange={this.handleUserName} required/>
                         <label htmlFor="surname">Surname</label>
@@ -191,13 +194,14 @@ class Allusers extends React.Component {
                         <label htmlFor="password">Password</label>
                         <input id="password" type="password" placeholder="Enter password" className="form-control" onChange={this.handleUserPassword} required/>
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="isadmin" onChange={this.userAdmin} required/>
+                            <input className="form-check-input" type="checkbox" value="" id="isadmin" onChange={this.userAdmin}/>
                             <label className="form-check-label" htmlFor="isadmin">
                                 Admin
                             </label> 
                         </div>
+                    </ModalForm>
                 </Modal>
-                </form>
+                
                 <Search filter={this.filterData} changeHandler={this.handleSearch} styleName="form-inline d-flex d-lg-none justify-content-center mb-2" barClass="col-8">
                     <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadUsers}><FontAwesomeIcon icon={faSyncAlt} /></button>
                     <button className="btn btn-outline-success ml-2"  type="button" data-toggle="modal" data-target="#addusermodal"><FontAwesomeIcon icon={faPlus} /></button> 

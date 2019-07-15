@@ -2,7 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import Search from './Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSyncAlt, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import Moment from 'react-moment';
 
 class History extends React.Component {
 
@@ -11,6 +12,7 @@ class History extends React.Component {
         this.state = {
             data : [],
             copyData: [],
+            copyGuests: []
         }; 
     }
   
@@ -84,9 +86,53 @@ class History extends React.Component {
                 this.state.copyData.map((event, i) => {
                     
                     return (
-                        <div className="col-12">
-                            
-                            {event.name}
+                        <div className="col-12" key={i}>
+                            <div className="row hoverable" data-toggle="collapse" data-target={"#guests" + i}>
+                                <div className="col-3 text-center pt-1 pb-1">
+                                    {event.name}
+                                </div>
+                                <div className="col-3 text-center pt-1 pb-1">
+                                    {event.idcreator}
+                                </div>
+                                <div className="col-3 text-center pt-1 pb-1">
+                                    {event.place}
+                                </div>
+                                <div className="col-3 text-center pt-1 pb-1">
+                                    <div className="mr-3 d-inline-block">
+                                        <Moment format="H:m">
+                                        {event.date}
+                                        </Moment>
+                                    </div>
+                                    <div className="d-inline-block">
+                                        <Moment format="DD/MM/Y">
+                                        {event.date}
+                                        </Moment>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row collapse justify-content-center" id={"guests" + i}>
+                                <div className="col-12 col-lg-6 mt-1 mb-3 " >
+                                    <div className="row" style={{backgroundColor: "rgb(248, 249, 250)"}}>
+                                        <div className="col-6 text-center pt-1 pb-1">Name</div>
+                                        <div className="col-6 text-center pt-1 pb-1">Surname</div>
+                                    </div>   
+                                    {event.guests ? event.guests.map((guest,j) => {
+                                        return (
+                                            <div key={j}>
+                                                {event.guests.confirm ? 
+                                                    <div className="row">
+                                                        <div className="col-6 text-center pt-1 pb-1">{guest.name}</div>
+                                                        <div className="col-6 text-center pt-1 pb-1">{guest.surname}</div>
+                                                    </div>
+                                                : <div className="text-center">No guests</div>
+                                                }
+                                                
+                                            </div>
+                                        )
+                                    }): <div>No guests</div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     )
                 })
