@@ -67,15 +67,25 @@ class History extends React.Component {
    return (
      <div className={classnames("history", this.props.styleName) } style={this.props.style}>
         <div className="row justify-content-center mb-3">
-            <Search filter={this.filterData} changeHandler={this.handleSearch} styleName="form-inline justify-content-center">
-                <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadEvents}><FontAwesomeIcon icon={faSyncAlt} /></button>
+            <Search filter={this.filterData} changeHandler={this.handleSearch} styleName="form-inline justify-content-center" barClass="col-10"> 
+                <button className="btn btn-outline-success "  type="button" onClick={this.loadEvents}><FontAwesomeIcon icon={faSyncAlt} /></button>
             </Search>
         </div>
-        <div className="row ml-4 mr-4 border-top">
+        <div className="row ml-4 mr-4 border-top ">
+            <div className="col-12 ">
+                <div className="row border-bottom">
+                    <div className="col-3 text-center pt-3 pb-3"><h4 className="border-left border-right vertical-align-center m-0">Name</h4></div>
+                    <div className="col-3 text-center pt-3 pb-3"><h4 className="border-right vertical-align-center m-0">Host</h4></div>
+                    <div className="col-3 text-center pt-3 pb-3"><h4 className="border-right vertical-align-center m-0">Place</h4></div>
+                    <div className="col-3 text-center pt-3 pb-3"><h4 className="border-right vertical-align-center m-0">Date</h4></div>
+                </div>
+            </div>
             {
                 this.state.copyData.map((event, i) => {
+                    
                     return (
                         <div className="col-12">
+                            
                             {event.name}
                         </div>
                     )
