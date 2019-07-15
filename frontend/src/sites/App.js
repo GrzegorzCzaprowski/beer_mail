@@ -1,5 +1,7 @@
 import React from 'react';
 import Header from './components/Header';
+import History from './components/History';
+
 
 class App extends React.Component {
 
@@ -45,21 +47,21 @@ class App extends React.Component {
             <div className="col-4 event-nav-com text-center border-right border-left pt-2 pb-2" 
             style={{backgroundColor: this.state.location.futureEvents ? this.state.navColor: "transparent"}}
             onClick={this.handleFuture}>
-              Future events
+              <h3>Future events</h3>
             </div>
             <div className="col-4 event-nav-com text-center border-right pt-2 pb-2"
             style={{backgroundColor: this.state.location.invitations ? this.state.navColor: "transparent"}}
             onClick={this.handleInvitations}>
-              Invitations
+              <h3>Invitations</h3>
             </div>
             <div className="col-4 event-nav-com text-center border-right pt-2 pb-2"
             style={{backgroundColor: this.state.location.history ? this.state.navColor: "transparent"}}
             onClick={this.handleHistory}>
-              History
+              <h3>History</h3>
             </div>
           </div>
           <div className="row main border-left border-right ">
-          
+            <History style={{display: this.state.location.history ? "block": "none"}} styleName="col-12 mt-3"></History>
           </div>
         </div>
      </div>
