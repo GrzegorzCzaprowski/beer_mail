@@ -13,6 +13,7 @@ type modelerEvent interface {
 	DeleteEvent(int) error
 	ConfirmEvent(int, int, bool) error
 	GetUser(int) (modelsU.User, error)
+	GetUpcomingEvents() ([]modelsE.Event, error)
 }
 
 //EventHandler sadasd

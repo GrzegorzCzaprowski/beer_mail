@@ -2,7 +2,7 @@ package modelsE
 
 import (
 	"database/sql"
-	"fmt"
+	"strconv"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/models/modelsU"
 	"github.com/dgrijalva/jwt-go"
@@ -55,34 +55,58 @@ func (model EventModel) GetUser(id int) (modelsU.User, error) {
 	return user, nil
 }
 
-func (model EventModel) DeleteEvent(id int) error {
-	res, err := model.DB.Exec("DELETE FROM events WHERE id=$1", id)
-	if err != nil {
-		return err
-	}
+func (model EventModel) scanRows(rows *sql.Rows) ([]Event, error) {
+	var events []Event
+	for rows.Next() {
+		event := Event{}
+		err := rows.Scan(&event.ID, &event.Name, &event.IDcreator, &event.Date, &event.Place)
+		if err != nil {
+			return events, err
+		}
+		//	//	//	//
+		guests, err := model.getGuests(event)
+		if err != nil {
+			return nil, err
+		}
+		event.Guests = guests
 
-	numberOfRows, err := res.RowsAffected()
-	if err != nil {
-		return err
+		id, err := strconv.Atoi(event.IDcreator)
+		creator, err := model.GetUser(id)
+		event.IDcreator = creator.Name + " " + creator.Surname
+
+		///////
+		events = append(events, event)
 	}
-	if numberOfRows < 1 {
-		return fmt.Errorf("event with id %d dont exists", id)
-	}
-	return err
+	return events, rows.Err()
 }
 
-func (model EventModel) ConfirmEvent(eventID, userID int, confirm bool) error {
-	res, err := model.DB.Exec("UPDATE guests SET confirm =$1 WHERE id_events=$2 AND id_users=$3", confirm, eventID, userID)
-	if err != nil {
-		return err
-	}
+func (model EventModel) getGuests(event Event) ([]Guest, error) {
+	var guests []Guest
+	rows2, err := model.DB.Query("SELECT * FROM guests WHERE id_events=$1", event.ID)
+	for rows2.Next() {
+		guest := Guest{}
+		var bla string
+		var bla2 string
+		var guestID int
+		var tof string
+		_ = rows2.Scan(&bla, &bla2, &guestID, &tof)
+		if err != nil {
+			return nil, err
+		}
+		guest.Confirm = tof
 
-	numberOfRows, err := res.RowsAffected()
+		user, err := model.GetUser(guestID)
+		if err != nil {
+			return nil, err
+		}
+		guest.Name = user.Name
+		guest.Surname = user.Surname
+		guest.Email = user.Email
+
+		guests = append(guests, guest)
+	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if numberOfRows < 1 {
-		return fmt.Errorf("event with id %d dont exists", eventID)
-	}
-	return err
+	return guests, nil
 }
