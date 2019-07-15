@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/authorization"
 	"github.com/GrzegorzCzaprowski/beer_mail/backend/error_handler"
@@ -11,35 +10,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (h EventHandler) Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
+func (h EventHandler) Upcoming(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	_, err := authorization.UserAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
 	}
 
-	id, err := strconv.Atoi(params.ByName("id"))
+	events, err := h.M.GetUpcomingEvents()
 	if err != nil {
-		error_handler.Error(err, w, "can't parse id to int ", http.StatusInternalServerError)
-		return
-	}
-
-	event, err := h.M.GetEvent(id)
-	if err != nil {
-		error_handler.Error(err, w, "can't get event: ", http.StatusInternalServerError)
-		return
-	}
-
-	err = h.M.DeleteEvent(id)
-	if err != nil {
-		error_handler.Error(err, w, "can't delete event: ", http.StatusInternalServerError)
+		error_handler.Error(err, w, "can't get events: ", http.StatusInternalServerError)
 		return
 	}
 
 	res := response.Resp{
 		Status: "succes",
-		Data:   event,
+		Data:   events,
 	}
 	response.Writer(w, res, http.StatusOK)
-	log.Info("event ", event.Name, " deleted")
+	log.Info("got all upcoming events")
 }

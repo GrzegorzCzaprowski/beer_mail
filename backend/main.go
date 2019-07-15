@@ -44,6 +44,7 @@ func main() {
 	router.GET("/event/get", eventHandler.Events)
 	router.DELETE("/event/delete/:id", eventHandler.Delete)
 	router.GET("/event/confirm/:token", eventHandler.ConfirmLink)
+	router.GET("/event/upcoming", eventHandler.Upcoming)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
