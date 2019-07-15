@@ -1,10 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
-import Modal from './Modal';
+import Modal, {ModalForm, ModalBody} from './Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import Search from './Search';
 
 class Allusers extends React.Component {
 
@@ -25,8 +25,10 @@ class Allusers extends React.Component {
             userAdmin: false,
             info: ""
         };
+        this.userForm = React.createRef();
 
         this.deleteUser = this.deleteUser.bind(this)
+        this.filterData = this.filterData.bind(this)
     }
     componentDidMount() {
         this.loadUsers()
@@ -46,11 +48,13 @@ class Allusers extends React.Component {
                     window.location.href = '/login';
                 }
                 if(json.status === "succes"){
-                    const copyData = json.data.slice();
-                    this.setState({
-                        data: json.data,
-                        copyData: copyData
-                    })
+                    if(json.data != null){
+                        const copyData = json.data.slice();
+                        this.setState({
+                            data: json.data,
+                            copyData: copyData
+                        })
+                    }
                 } else {
                     console.log(json.data)
                 }
@@ -80,6 +84,7 @@ class Allusers extends React.Component {
                         showErr:false,
                         info: " User "+json.data.name+" "+json.data.surname +" succesfully deleted."
                     })
+                    console.log(json.data)
                     this.loadUsers()
                 } else {
                     this.setState({
@@ -159,7 +164,9 @@ class Allusers extends React.Component {
     handleUserAdmin = (event) => {
         this.setState({userAdmin: event.target.value});
     }
-
+    handleSearch = (e) => {
+        this.setState({ nameFilter: e.target.value }) 
+    }
     render() {
         return (
             <div className={classnames('allusers', this.props.styleName)}>
@@ -170,39 +177,36 @@ class Allusers extends React.Component {
                 <div className="alert alert-danger text-center mb-2" htmlrole="alert" style={{display: this.state.showErr ? 'block': 'none'}}>
                     {this.state.err}
                 </div>
-                <Modal styleName="fade" title="Are you sure?" button="Delete" id="usermodal" parentFunc={this.deleteUser} item={this.state.userToDelete}>
-                    <p>Do you want to delete this user. The change is irreversible.</p>
+                <Modal styleName="fade" title="Are you sure?" id="usermodal">
+                    <ModalBody parentFunc={this.deleteUser} item={this.state.userToDelete} button="Delete">
+                        <p>Do you want to delete this user. The change is irreversible.</p>
+                    </ModalBody>
                 </Modal>
-                <Modal styleName="fade" title="Add user" button="Add" id="addusermodal" parentFunc={this.addUser} >
-                    <form>
+                
+                <Modal styleName="fade" title="Add user"  id="addusermodal" >
+                    <ModalForm submit={this.addUser} button="Add">
                         <label htmlFor="name">Name</label>
-                        <input id="name" type="text" placeholder="Enter name" className="form-control" onChange={this.handleUserName}/>
+                        <input id="name" type="text" placeholder="Enter name" className="form-control" onChange={this.handleUserName} required/>
                         <label htmlFor="surname">Surname</label>
-                        <input id="surname" type="text" placeholder="Enter Surname" className="form-control" onChange={this.handleUserSurname}/>
+                        <input id="surname" type="text" placeholder="Enter Surname" className="form-control" onChange={this.handleUserSurname} required/>
                         <label htmlFor="email">Email</label>
-                        <input id="email" type="email" placeholder="Enter email" className="form-control" onChange={this.handleUserEmail}/>
+                        <input id="email" type="email" placeholder="Enter email" className="form-control" onChange={this.handleUserEmail} required/>
                         <label htmlFor="password">Password</label>
-                        <input id="password" type="password" placeholder="Enter password" className="form-control" onChange={this.handleUserPassword}/>
+                        <input id="password" type="password" placeholder="Enter password" className="form-control" onChange={this.handleUserPassword} required/>
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="isadmin" onChange={this.userAdmin}/>
                             <label className="form-check-label" htmlFor="isadmin">
                                 Admin
                             </label> 
                         </div>
-                    </form>
+                    </ModalForm>
                 </Modal>
-                <form className="form-inline d-flex d-lg-none justify-content-center mb-2" onSubmit={this.filterData}>
-                    <div className="input-group">
-                        <input className="form-control " type="search" placeholder="Search" 
-                            aria-label="Search " onChange={(e) => { this.setState({ nameFilter: e.target.value }) }}/>
-                        <div className="input-group-append">
-                            <button type="submit" className="btn btn-outline-success" ><FontAwesomeIcon icon={faSearch}/></button> 
-                        </div>
-                        
-                    </div>
+                
+                <Search filter={this.filterData} changeHandler={this.handleSearch} styleName="form-inline d-flex d-lg-none justify-content-center mb-2" barClass="col-8">
                     <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadUsers}><FontAwesomeIcon icon={faSyncAlt} /></button>
-                    <button className="btn btn-outline-success ml-2"  type="button" data-toggle="modal" data-target="#addusermodal"><FontAwesomeIcon icon={faPlus} /></button>
-                </form>
+                    <button className="btn btn-outline-success ml-2"  type="button" data-toggle="modal" data-target="#addusermodal"><FontAwesomeIcon icon={faPlus} /></button> 
+                </Search>
+                
                 <table className="table">
                     <thead>
                         <tr>
@@ -211,19 +215,10 @@ class Allusers extends React.Component {
                             <th scope="col">Surname</th>
                             <th scope="col">Email</th>
                             <th  className="d-flex justify-content-center ">
-                                <form className="form-inline d-none d-lg-flex" onSubmit={this.filterData}>
-                                    <div className="input-group">
-                                        <input className="form-control " type="search" placeholder="Search" aria-label="Search "
-                                            onChange={(e) => { this.setState({ nameFilter: e.target.value }) }}/>
-                                        <div className="input-group-append">
-                                            <button className="btn btn-outline-success" type="submit"><FontAwesomeIcon icon={faSearch} /></button> 
-                                        </div>
-                                        
-                                        
-                                    </div>    
-                                    <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadUsers}><FontAwesomeIcon icon={faSyncAlt} /></button>
-                                    <button className="btn btn-outline-success ml-2"  type="button" data-toggle="modal" data-target="#addusermodal"><FontAwesomeIcon icon={faPlus} /></button>
-                                </form>
+                            <Search filter={this.filterData} changeHandler={this.handleSearch} styleName="form-inline d-none d-lg-flex justify-content-center mb-2">
+                                <button className="btn btn-outline-success ml-2"  type="button" onClick={this.loadUsers}><FontAwesomeIcon icon={faSyncAlt} /></button>
+                                <button className="btn btn-outline-success ml-2"  type="button" data-toggle="modal" data-target="#addusermodal"><FontAwesomeIcon icon={faPlus} /></button> 
+                            </Search>
                             </th>
                         </tr>
                     </thead>

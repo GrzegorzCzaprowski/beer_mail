@@ -6,7 +6,6 @@ class Modal extends React.Component {
 
   constructor(props) {
     super(props);
-    this.doParentFunc = this.doParentFunc.bind(this)
   }
 
   doParentFunc(){
@@ -26,13 +25,8 @@ class Modal extends React.Component {
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
-            <div className="modal-body">
-                {this.props.children}
-            </div>
-            <div className="modal-footer">
-            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.doParentFunc}>{this.props.button}</button>
-            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+            {this.props.children}
+            
         </div>
         </div>
     </div>
@@ -41,5 +35,65 @@ class Modal extends React.Component {
 
 }
 
+class ModalForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.submit = this.submit.bind(this)
+  }
+
+  submit = () => {
+    if (this.props.submit) {
+      this.props.submit()
+    }
+  }
+
+  render() {
+    return(
+      <form onSubmit={this.submit}>
+        <div className="modal-body">
+            {this.props.children}
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-primary" type="submit">{this.props.button}</button>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div> 
+      </form>
+    )
+  }
+
+}
+
+class ModalBody extends React.Component {
+  constructor(props) {
+    super(props);
+    this.doParentFunc = this.doParentFunc.bind(this)
+  }
+
+  doParentFunc(){
+    if(this.props.parentFunc){
+        this.props.parentFunc(this.props.item)
+    } 
+  }
+
+  render() {
+    return(
+      <div>
+        <div className="modal-body">
+              {this.props.children}
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-primary" data-dismiss="modal" onClick={this.doParentFunc}>{this.props.button}</button>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div> 
+      </div>
+    )
+  }
+
+}
+
 
 export default Modal;
+export {
+  ModalBody,
+  ModalForm,
+}

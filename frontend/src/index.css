@@ -44,3 +44,12 @@ code {
 th {
   border-bottom: 0px !important;
 }
+.event-nav-com:hover {
+  background-color: rgb(248, 249, 250) !important;
+}
+.event-nav-com {
+  transition: background-color 0.5s;
+}
+.hoverable:hover {
+  background-color: rgb(248, 249, 250) !important;
+}

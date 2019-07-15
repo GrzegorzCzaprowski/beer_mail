@@ -12,7 +12,7 @@ import (
 )
 
 func (h EventHandler) Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
-	_, err := authorization.UserTokenAuthentication(w, req)
+	_, err := authorization.UserAuthentication(w, req)
 	if err != nil {
 		error_handler.Error(err, w, "authentication failed: ", http.StatusInternalServerError)
 		return
@@ -30,7 +30,7 @@ func (h EventHandler) Delete(w http.ResponseWriter, req *http.Request, params ht
 		return
 	}
 
-	err = h.M.DeleteEventFromDB(id)
+	err = h.M.DeleteEvent(id)
 	if err != nil {
 		error_handler.Error(err, w, "can't delete event: ", http.StatusInternalServerError)
 		return
